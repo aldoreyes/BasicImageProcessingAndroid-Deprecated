@@ -16,7 +16,11 @@ public class OtsuAsyncTask extends AsyncTask<Bitmap, Void, Bitmap> {
 		mHandler = new WeakReference<IBitmapResult>(handler);
 	}
 	
-	private int getThreshold(Bitmap source){
+	public OtsuAsyncTask(){
+		this(null);
+	}
+	
+	private static int getThreshold(Bitmap source){
 		int[] histogram = BitmapUtils.getGrayscaleHistogram(source);
 		int total = source.getWidth() * source.getHeight();
 		float sum = 0;
@@ -54,8 +58,7 @@ public class OtsuAsyncTask extends AsyncTask<Bitmap, Void, Bitmap> {
 		return threshold;
 	}
 	
-	@Override
-	protected Bitmap doInBackground(Bitmap... params) {
+	public static Bitmap fetchResult(Bitmap... params){
 		Bitmap source = params[0];
 		Bitmap target = Bitmap.createBitmap(source.getWidth(), source.getHeight(), source.getConfig());
 		Canvas c = new Canvas(target);
@@ -72,6 +75,11 @@ public class OtsuAsyncTask extends AsyncTask<Bitmap, Void, Bitmap> {
 		}
 		
 		return target;
+	}
+	
+	@Override
+	protected Bitmap doInBackground(Bitmap... params) {
+		return fetchResult(params);
 	}
 	
 	@Override

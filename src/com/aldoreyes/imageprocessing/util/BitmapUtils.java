@@ -129,6 +129,10 @@ public class BitmapUtils {
 
 		return toReturn;
 	}
+	
+	public static void dilate(Bitmap bitmap, int[][] se){
+		dilate(bitmap.copy(bitmap.getConfig(), false), bitmap, se);
+	}
 
 	public static int dilate(Bitmap source, Bitmap target, int[][] se) {
 		int hlen = source.getWidth(), vlen = source.getHeight(), offsetX = (int) -Math

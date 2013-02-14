@@ -1,18 +1,14 @@
 package com.aldoreyes.imageprocessing.segmentation;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.util.Log;
 import android.util.SparseArray;
-import android.util.SparseIntArray;
 
-public class SegmentInfo {
+public class SegmentInfo implements Comparable<SegmentInfo> {
 	private Point mStartPoint;
 	private Point mEndPoint;
-	private int mLabel;
+	public int Label;
 	private Bitmap mSource;
 	private Point mCenter;
 
@@ -43,7 +39,7 @@ public class SegmentInfo {
 	}
 
 	public SegmentInfo(int label, Bitmap source) {
-		mLabel = label;
+		Label = label;
 		mSource = source;
 		mCache = new SparseArray<Double>();
 		mCentralMomentCache = new SparseArray<Double>();
@@ -59,7 +55,7 @@ public class SegmentInfo {
 		for (int y = 0; y < minY; y++) {
 			for (int x = 0; x < minX; x++) {
 
-				if ((mSource.getPixel(x, y) & 0xffffff) == mLabel) {
+				if ((mSource.getPixel(x, y) & 0xffffff) == Label) {
 					minY = y;
 					break;
 				}
@@ -69,7 +65,7 @@ public class SegmentInfo {
 		// get min point X
 		for (int y = 0; y < mSource.getHeight(); y++) {
 			for (int x = 0; x < minX; x++) {
-				if ((mSource.getPixel(x, y) & 0xffffff) == mLabel) {
+				if ((mSource.getPixel(x, y) & 0xffffff) == Label) {
 					minX = x;
 					break;
 				}
@@ -80,7 +76,7 @@ public class SegmentInfo {
 		// get max point Y
 		for (int y = mSource.getHeight() - 1; y > maxY; y--) {
 			for (int x = 0; x < mSource.getWidth(); x++) {
-				if ((mSource.getPixel(x, y) & 0xffffff) == mLabel) {
+				if ((mSource.getPixel(x, y) & 0xffffff) == Label) {
 					maxY = y;
 					break;
 				}
@@ -89,7 +85,7 @@ public class SegmentInfo {
 		// get max point X
 		for (int y = 0; y < mSource.getHeight(); y++) {
 			for (int x = mSource.getWidth() - 1; x > maxX; x--) {
-				if ((mSource.getPixel(x, y) & 0xffffff) == mLabel) {
+				if ((mSource.getPixel(x, y) & 0xffffff) == Label) {
 					maxX = x;
 					break;
 				}
@@ -107,7 +103,7 @@ public class SegmentInfo {
 
 		for (int y = mStartPoint.y; y < mEndPoint.y; y++) {
 			for (int x = mStartPoint.x; x < mEndPoint.x; x++) {
-				if ((mSource.getPixel(x, y) & 0xffffff) == mLabel) {
+				if ((mSource.getPixel(x, y) & 0xffffff) == Label) {
 					m += Math.pow(x, p) * Math.pow(y, q);
 				}
 			}
@@ -127,7 +123,7 @@ public class SegmentInfo {
 		double m = 0;
 		for (int y = mStartPoint.y; y < mEndPoint.y; y++) {
 			for (int x = mStartPoint.x; x < mEndPoint.x; x++) {
-				if ((mSource.getPixel(x, y) & 0xffffff) == mLabel) {
+				if ((mSource.getPixel(x, y) & 0xffffff) == Label) {
 					m += Math.pow(x - centroid.x, p)
 							* Math.pow(y - centroid.y, q);
 				}
@@ -213,5 +209,10 @@ public class SegmentInfo {
 		
 		return mFlusser4 = getN(1, 1) * (Math.pow(getN(3,0) + getN(1, 2), 2) - Math.pow(getN(0, 3) + getN(2, 1), 2)) -
 				(getN(2, 0) - getN(0, 2))*(getN(3, 0) + getN(1, 2))*(getN(0, 3) + getN(2, 1));
+	}
+
+	@Override
+	public int compareTo(SegmentInfo another) {
+		return Label - another.Label;
 	}
 }
